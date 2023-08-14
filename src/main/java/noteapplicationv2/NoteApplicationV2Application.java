@@ -1,0 +1,13 @@
+package noteapplicationv2;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class NoteApplicationV2Application {
+
+    public static void main(String[] args) {
+        SpringApplication.run(NoteApplicationV2Application.class, args);
+    }
+
+}
