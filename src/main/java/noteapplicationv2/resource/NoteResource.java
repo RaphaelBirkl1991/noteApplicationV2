@@ -1,7 +1,9 @@
 package noteapplicationv2.resource;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+
 import noteapplicationv2.domain.HttpResponse;
 import noteapplicationv2.enumeration.Level;
 import noteapplicationv2.domain.Note;
@@ -12,6 +14,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.time.LocalDateTime;
+
+
+import static noteapplicationv2.util.DateUtil.dateTimeFormatter;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @RestController
 @RequestMapping(path = "/note")
@@ -21,7 +28,13 @@ public class NoteResource {
 
     @GetMapping("/all")
     public ResponseEntity<HttpResponse<Note>> getNotes() {
-        return ResponseEntity.ok().body(noteService.getNotes());
+//        try {
+//            TimeUnit.SECONDS.sleep(3);
+//            throw new InterruptedException();
+//        } catch (InterruptedException e) {
+//            throw new RuntimeException(e);
+//        }
+      return ResponseEntity.ok().body(noteService.getNotes());
     }
 
     @PostMapping("/add")
@@ -45,4 +58,23 @@ public class NoteResource {
     public ResponseEntity<HttpResponse<Note>> updateNote(@PathVariable(value = "noteId") Long id) throws NoteNotFoundException {
         return ResponseEntity.ok().body(noteService.deleteNote(id));
     }
+
+    @RequestMapping("/error")
+    public ResponseEntity<HttpResponse<?>> handleError(HttpServletRequest request) {
+        return new ResponseEntity<>(
+            HttpResponse.builder()
+                    .reason("There is no mapping for a " + request.getMethod() + " request for this path on the server")
+                    .developerMessage("There is no mapping for a " + request.getMethod() + " request for this path on the server")
+                    .status(NOT_FOUND)
+                    .statusCode(NOT_FOUND.value())
+                    .timeStamp(LocalDateTime.now().format(dateTimeFormatter()))
+                    .build(), NOT_FOUND
+        );
+    }
+
+
+
+
 }
+
+

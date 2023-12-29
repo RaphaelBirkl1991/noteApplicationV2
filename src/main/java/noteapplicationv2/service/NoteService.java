@@ -11,8 +11,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static java.util.Collections.singleton;
 import static java.util.Collections.singletonList;
@@ -33,7 +35,7 @@ public class NoteService {
     public HttpResponse<Note> getNotes() {
         log.info("Fetching all the notes from the database");
         return HttpResponse.<Note>builder()
-                .notes(noteRepo.findAll())
+                .notes(noteRepo.findAll().stream().sorted(Comparator.comparing(Note::getCreatedAt).reversed()).collect(Collectors.toList()))
                 .message(noteRepo.count() > 0 ? noteRepo.count() + " notes retrieved" : "No notes to display")
                 .status(OK)
                 .statusCode(OK.value())
@@ -46,7 +48,7 @@ public class NoteService {
         List<Note> notes = noteRepo.findByLevel(level);
         log.info("Filtering notes by level {}", level);
         return HttpResponse.<Note>builder()
-                .notes(notes)
+                .notes(notes.stream().sorted(Comparator.comparing(Note::getCreatedAt).reversed()).collect(Collectors.toList()))
                 .message(notes.size() + " notes are of " + level + " importance")
                 .status(OK)
                 .statusCode(OK.value())
