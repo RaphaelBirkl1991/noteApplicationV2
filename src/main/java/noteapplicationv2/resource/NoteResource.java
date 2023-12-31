@@ -15,6 +15,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.time.LocalDateTime;
+import java.util.concurrent.TimeUnit;
 
 
 import static noteapplicationv2.util.DateUtil.dateTimeFormatter;
@@ -28,17 +29,23 @@ public class NoteResource {
 
     @GetMapping("/all")
     public ResponseEntity<HttpResponse<Note>> getNotes() {
-//        try {
-//            TimeUnit.SECONDS.sleep(3);
-//            throw new InterruptedException();
-//        } catch (InterruptedException e) {
-//            throw new RuntimeException(e);
-//        }
-      return ResponseEntity.ok().body(noteService.getNotes());
+        try {
+            TimeUnit.SECONDS.sleep(1);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+
+        return ResponseEntity.ok().body(noteService.getNotes());
     }
 
     @PostMapping("/add")
     public ResponseEntity<HttpResponse<Note>> saveNote(@RequestBody @Valid Note note) {
+        try {
+            TimeUnit.SECONDS.sleep(1);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         return ResponseEntity.created(
                 URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/note/all").toUriString())
         ).body(noteService.saveNote(note));
